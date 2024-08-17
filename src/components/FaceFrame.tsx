@@ -29,6 +29,8 @@ function FaceFrame(){
     const[gcTopBack, setGcTopBack]=useState<string>("")
     const[gcMiddleBack, setGcMiddleBack]=useState<string>("")
     const[gcBottomBack, setGcBottomBack]=useState<string>("")
+    const[stileLen, setStileLen] = useState<string>("")
+    const[railLen, setRailLen] = useState<string>("")
     const[leftColor,setLeftColor]=useState<string>("black")
     const[rightColor,setRightColor]=useState<string>("black")
     const[topColor,setTopColor]=useState<string>("black")
@@ -88,6 +90,8 @@ function FaceFrame(){
                 setGcTopBack(res.data.topBack)
                 setGcMiddleBack(res.data.middleBack)
                 setGcBottomBack(res.data.bottomBack)
+                setRailLen(res.data.railLen)
+                setStileLen(res.data.stileLen)
             })
     }
 
@@ -101,7 +105,7 @@ function FaceFrame(){
                     <td colSpan={2} style={{paddingTop:'10px', textAlign:'right'}}>
                         Enter distance(in) from top or left
                     </td>
-                    <td style={{textAlign:'right',paddingLeft:'100px'}} rowSpan={5}>
+                    <td style={{textAlign:'center',paddingLeft:'100px'}} rowSpan={3}>
                         <Button style={{backgroundColor:'#1677ff', color:'white'}} onClick={getGCODE}>Generate GCodes</Button>
                     </td>
                 </tr>
@@ -128,6 +132,7 @@ function FaceFrame(){
                     </td>
                     <td style={{textAlign:'right',minWidth:'10vw'}}>Slot3</td>
                     <td><Input value={s3}  onChange={(e)=>setS3(e.target.value)}/></td>
+                    <td style={{textAlign:'center',paddingLeft:'100px'}}>Min Stile: {stileLen}in</td>
                 </tr>
                 <tr>
                     <td>Bottom Width</td>
@@ -140,6 +145,7 @@ function FaceFrame(){
                     </td>
                     <td style={{textAlign:'right',minWidth:'10vw'}}>Slot4</td>
                     <td><Input value={s4} onChange={(e)=>setS4(e.target.value)}/></td>
+                    <td style={{textAlign:'center',paddingLeft:'100px'}}>Min Rail: {railLen}in</td>
                 </tr>
             </table>
             <br/>
