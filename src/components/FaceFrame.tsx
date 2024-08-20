@@ -26,9 +26,11 @@ function FaceFrame(){
     const[gcTop, setGcTop]=useState<string>("")
     const[gcMiddle, setGcMiddle]=useState<string>("")
     const[gcBottom, setGcBottom]=useState<string>("")
-    const[gcTopBack, setGcTopBack]=useState<string>("")
+    const[gcTopBackRight, setGcTopBackRight]=useState<string>("")
+    const[gcTopBackLeft, setGcTopBackLeft]=useState<string>("")
     const[gcMiddleBack, setGcMiddleBack]=useState<string>("")
-    const[gcBottomBack, setGcBottomBack]=useState<string>("")
+    const[gcBottomBackRight, setGcBottomBackRight]=useState<string>("")
+    const[gcBottomBackLeft, setGcBottomBackLeft]=useState<string>("")
     const[stileLen, setStileLen] = useState<string>("")
     const[railLen, setRailLen] = useState<string>("")
     const[leftColor,setLeftColor]=useState<string>("black")
@@ -36,9 +38,11 @@ function FaceFrame(){
     const[topColor,setTopColor]=useState<string>("black")
     const[middleColor,setMiddleColor]=useState<string>("black")
     const[bottomColor,setBottomColor]=useState<string>("black")
-    const[topBackColor,setTopBackColor]=useState<string>("black")
+    const[topBackRightColor,setTopBackRightColor]=useState<string>("black")
+    const[topBackLeftColor,setTopBackLeftColor]=useState<string>("black")
     const[middleBackColor,setMiddleBackColor]=useState<string>("black")
-    const[bottomBackColor,setBottomBackColor]=useState<string>("black")
+    const[bottomBackRightColor,setBottomBackRightColor]=useState<string>("black")
+    const[bottomBackLeftColor,setBottomBackLeftColor]=useState<string>("black")
     
 
     function getGCODE(){
@@ -87,9 +91,11 @@ function FaceFrame(){
                 setGcTop(res.data.top)
                 setGcMiddle(res.data.middle)
                 setGcBottom(res.data.bottom)
-                setGcTopBack(res.data.topBack)
+                setGcTopBackRight(res.data.topBackRight)
+                setGcTopBackLeft(res.data.topBackLeft)
                 setGcMiddleBack(res.data.middleBack)
-                setGcBottomBack(res.data.bottomBack)
+                setGcBottomBackRight(res.data.bottomBackRight)
+                setGcBottomBackLeft(res.data.bottomBackLeft)
                 setRailLen(res.data.railLen)
                 setStileLen(res.data.stileLen)
             })
@@ -246,15 +252,23 @@ function FaceFrame(){
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Top Rail Back
+                    <td>Top Rail Back Left
                         <CopyToClipboard
-                            text = {gcTopBack}
-                            onCopy ={()=>setTopBackColor("red")}
+                            text = {gcTopBackLeft}
+                            onCopy ={()=>setTopBackLeftColor("red")}
                         >
-                            <span style={{color:topBackColor}} className="copyButton">
-                                {topBackColor==="red"?"copied":"copy"}
+                            <span style={{color:topBackLeftColor}} className="copyButton">
+                                {topBackLeftColor==="red"?"copied":"copy"}
+                            </span>
+                        </CopyToClipboard>
+                    </td>
+                    <td>Top Rail Back Right
+                        <CopyToClipboard
+                            text = {gcTopBackRight}
+                            onCopy ={()=>setTopBackRightColor("red")}
+                        >
+                            <span style={{color:topBackRightColor}} className="copyButton">
+                                {topBackRightColor==="red"?"copied":"copy"}
                             </span>
                         </CopyToClipboard>
                     </td>
@@ -268,26 +282,42 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Bottom Rail Back
+                    <td>Bottom Rail Back Left
                         <CopyToClipboard
-                            text = {gcBottomBack}
-                            onCopy ={()=>setBottomBackColor("red")}
+                            text = {gcBottomBackLeft}
+                            onCopy ={()=>setBottomBackLeftColor("red")}
                         >
-                            <span style={{color:bottomBackColor}} className="copyButton">
-                                {bottomBackColor==="red"?"copied":"copy"}
+                            <span style={{color:bottomBackLeftColor}} className="copyButton">
+                                {bottomBackLeftColor==="red"?"copied":"copy"}
+                            </span>
+                        </CopyToClipboard>
+                    </td>
+                    <td>Bottom Rail Back Right
+                        <CopyToClipboard
+                            text = {gcBottomBackRight}
+                            onCopy ={()=>setBottomBackRightColor("red")}
+                        >
+                            <span style={{color:bottomBackRightColor}} className="copyButton">
+                                {bottomBackRightColor==="red"?"copied":"copy"}
                             </span>
                         </CopyToClipboard>
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
                     <td>
                         <TextArea
                             rows={14}
-                            value={gcTopBack}
-                            style={{width:'250px',color:topBackColor}}
-                            onChange={(e)=>setGcTopBack(e.target.value)}
+                            value={gcTopBackLeft}
+                            style={{width:'250px',color:topBackLeftColor}}
+                            onChange={(e)=>setGcTopBackLeft(e.target.value)}
+                        />
+                    </td>
+                    <td>
+                        <TextArea
+                            rows={14}
+                            value={gcTopBackRight}
+                            style={{width:'250px',color:topBackRightColor}}
+                            onChange={(e)=>setGcTopBackRight(e.target.value)}
                         />
                     </td>
                     <td>
@@ -301,9 +331,17 @@ function FaceFrame(){
                     <td>
                         <TextArea
                             rows={14}
-                            value={gcBottomBack}
-                            style={{width:'250px',color:bottomBackColor}}
-                            onChange={(e)=>setGcBottomBack(e.target.value)}
+                            value={gcBottomBackLeft}
+                            style={{width:'250px',color:bottomBackLeftColor}}
+                            onChange={(e)=>setGcBottomBackLeft(e.target.value)}
+                        />
+                    </td>
+                    <td>
+                        <TextArea
+                            rows={14}
+                            value={gcBottomBackRight}
+                            style={{width:'250px',color:bottomBackRightColor}}
+                            onChange={(e)=>setGcBottomBackRight(e.target.value)}
                         />
                     </td>
                 </tr>
