@@ -49,12 +49,15 @@ function FaceFrame(){
 
         const params :string[] = []
 
-
         setLeftColor('black')
         setRightColor('black')
         setTopColor('black')
         setMiddleColor('black')
         setBottomColor('black')
+        setTopBackLeftColor('black')
+        setTopBackRightColor('black')
+        setBottomBackLeftColor('black')
+        setBottomBackRightColor('black')
 
         if(top!==""){
             params.push(`t=${top}`)
@@ -252,7 +255,7 @@ function FaceFrame(){
                     </td>
                 </tr>
                 <tr>
-                    <td>Top Rail Back Left
+                    <td>Top Back Left \__
                         <CopyToClipboard
                             text = {gcTopBackLeft}
                             onCopy ={()=>setTopBackLeftColor("red")}
@@ -262,7 +265,7 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Top Rail Back Right
+                    <td>Top Back Right __/
                         <CopyToClipboard
                             text = {gcTopBackRight}
                             onCopy ={()=>setTopBackRightColor("red")}
@@ -272,7 +275,7 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Middle Rail(s) Back
+                    <td>Middle Back \__/
                         <CopyToClipboard
                             text = {gcMiddleBack}
                             onCopy ={()=>setMiddleBackColor("red")}
@@ -282,7 +285,7 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Bottom Rail Back Left
+                    <td>Bottom Back Left \__
                         <CopyToClipboard
                             text = {gcBottomBackLeft}
                             onCopy ={()=>setBottomBackLeftColor("red")}
@@ -292,7 +295,7 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Bottom Rail Back Right
+                    <td>Bottom Back Right __/
                         <CopyToClipboard
                             text = {gcBottomBackRight}
                             onCopy ={()=>setBottomBackRightColor("red")}
