@@ -105,9 +105,9 @@ function FaceFrame(){
     }
 
     return(
-        <>
+        <div className="ff">
             <h3>Face Frame GCode Generator</h3>
-            <table>
+            <table style={{margin:'auto'}}>
                 <tr>
                     <td></td>
                     <td></td>
@@ -159,103 +159,12 @@ function FaceFrame(){
             </table>
             <br/>
             <br/>
-            <table>
+            <table style={{margin:'auto'}}>
                 <tr>
-                    <td>Left Stile
-                        <CopyToClipboard
-                            text = {gcLeft}
-                            onCopy ={()=>setLeftColor("red")}
-                        >
-                            <span style={{color:leftColor}} className="copyButton">
-                                {leftColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td>Right Stile
-                        <CopyToClipboard
-                            text = {gcRight}
-                            onCopy ={()=>setRightColor("red")}
-                        >
-                            <span style={{color:rightColor}} className="copyButton">
-                                {rightColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td>Top Rail
-                        <CopyToClipboard
-                            text = {gcTop}
-                            onCopy ={()=>setTopColor("red")}
-                        >
-                            <span style={{color:topColor}} className="copyButton">
-                                {topColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td>Middle Rail(s)
-                        <CopyToClipboard
-                            text = {gcMiddle}
-                            onCopy ={()=>setMiddleColor("red")}
-                        >
-                            <span style={{color:middleColor}} className="copyButton">
-                                {middleColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td>Bottom Rail
-                        <CopyToClipboard
-                            text = {gcBottom}
-                            onCopy ={()=>setBottomColor("red")}
-                        >
-                            <span style={{color:bottomColor}} className="copyButton">
-                                {bottomColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                </tr>
-                <tr>
+                    <td></td>
+                    <td></td>
                     <td>
-                        <TextArea
-                            rows={14}
-                            value={gcLeft}
-                            style={{width:'250px',color:leftColor}}
-                            onChange={(e)=>setGcLeft(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcRight}
-                            style={{width:'250px',color:rightColor}}
-                            onChange={(e)=>setGcRight(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcTop}
-                            style={{width:'250px',color:topColor}}
-                            onChange={(e)=>setGcTop(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcMiddle}
-                            style={{width:'250px',color:middleColor}}
-                            onChange={(e)=>setGcMiddle(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcBottom}
-                            style={{width:'250px',color:bottomColor}}
-                            onChange={(e)=>setGcBottom(e.target.value)}
-                        />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Top Back Left \__
+                        Top Back Left \__
                         <CopyToClipboard
                             text = {gcTopBackLeft}
                             onCopy ={()=>setTopBackLeftColor("red")}
@@ -265,7 +174,17 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Top Back Right __/
+                    <td >Top Rail Front
+                        <CopyToClipboard
+                            text = {gcTop}
+                            onCopy ={()=>setTopColor("red")}
+                        >
+                            <span style={{color:topColor}} className="copyButton">
+                                {topColor==="red"?"copied":"copy"}
+                            </span>
+                        </CopyToClipboard>
+                    </td>
+                    <td >Top Back Right __/
                         <CopyToClipboard
                             text = {gcTopBackRight}
                             onCopy ={()=>setTopBackRightColor("red")}
@@ -275,17 +194,134 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Middle Back \__/
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td >
+                        <TextArea
+                            rows={14}
+                            value={gcTopBackLeft}
+                            style={{width:'250px',color:topBackLeftColor}}
+                            onChange={(e)=>setGcTopBackLeft(e.target.value)}
+                        />
+                    </td>
+                    <td >
+                        <TextArea
+                            rows={14}
+                            value={gcTop}
+                            style={{width:'250px',color:topColor}}
+                            onChange={(e)=>setGcTop(e.target.value)}
+                        />
+                    </td>
+                    <td >
+                        <TextArea
+                            rows={14}
+                            value={gcTopBackRight}
+                            style={{width:'250px',color:topBackRightColor}}
+                            onChange={(e)=>setGcTopBackRight(e.target.value)}
+                        />
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td >Left Stile
                         <CopyToClipboard
-                            text = {gcMiddleBack}
-                            onCopy ={()=>setMiddleBackColor("red")}
+                            text = {gcLeft}
+                            onCopy ={()=>setLeftColor("red")}
                         >
-                            <span style={{color:middleBackColor}} className="copyButton">
-                                {middleBackColor==="red"?"copied":"copy"}
+                            <span style={{color:leftColor}} className="copyButton">
+                                {leftColor==="red"?"copied":"copy"}
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Bottom Back Left \__
+                    <td></td>
+                    <td colSpan={3}rowSpan={2} >
+                        <table style={{margin:'auto',width:'100%'}}>
+                            <tr>
+                                <td></td>
+                                
+                                <td >Middle Rail(s)
+                                    <CopyToClipboard
+                                        text = {gcMiddle}
+                                        onCopy ={()=>setMiddleColor("red")}
+                                    >
+                                        <span style={{color:middleColor}} className="copyButton">
+                                            {middleColor==="red"?"copied":"copy"}
+                                        </span>
+                                    </CopyToClipboard>
+                                </td>
+                                <td >Middle Back \__/
+                                    <CopyToClipboard
+                                        text = {gcMiddleBack}
+                                        onCopy ={()=>setMiddleBackColor("red")}
+                                    >
+                                        <span style={{color:middleBackColor}} className="copyButton">
+                                            {middleBackColor==="red"?"copied":"copy"}
+                                        </span>
+                                    </CopyToClipboard>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td >
+                                    <TextArea
+                                        rows={14}
+                                        value={gcMiddle}
+                                        style={{width:'250px',color:middleColor}}
+                                        onChange={(e)=>setGcMiddle(e.target.value)}
+                                    />
+                                </td>
+                                <td >
+                                    <TextArea
+                                        rows={14}
+                                        value={gcMiddleBack}
+                                        style={{width:'250px',color:middleBackColor}}
+                                        onChange={(e)=>setGcMiddleBack(e.target.value)}
+                                    />
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td></td>
+                    <td >Right Stile
+                        <CopyToClipboard
+                            text = {gcRight}
+                            onCopy ={()=>setRightColor("red")}
+                        >
+                            <span style={{color:rightColor}} className="copyButton">
+                                {rightColor==="red"?"copied":"copy"}
+                            </span>
+                        </CopyToClipboard>
+                    </td>
+                </tr>
+                <tr>
+                    <td >
+                        <TextArea
+                            rows={14}
+                            value={gcLeft}
+                            style={{width:'250px',color:leftColor}}
+                            onChange={(e)=>setGcLeft(e.target.value)}
+                        />
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td >
+                        <TextArea
+                            rows={14}
+                            value={gcRight}
+                            style={{width:'250px',color:rightColor}}
+                            onChange={(e)=>setGcRight(e.target.value)}
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td >Bottom Back Left \__
                         <CopyToClipboard
                             text = {gcBottomBackLeft}
                             onCopy ={()=>setBottomBackLeftColor("red")}
@@ -295,7 +331,17 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
-                    <td>Bottom Back Right __/
+                    <td >Bottom Rail Front
+                        <CopyToClipboard
+                            text = {gcBottom}
+                            onCopy ={()=>setBottomColor("red")}
+                        >
+                            <span style={{color:bottomColor}} className="copyButton">
+                                {bottomColor==="red"?"copied":"copy"}
+                            </span>
+                        </CopyToClipboard>
+                    </td>
+                    <td >Bottom Back Right __/
                         <CopyToClipboard
                             text = {gcBottomBackRight}
                             onCopy ={()=>setBottomBackRightColor("red")}
@@ -305,41 +351,28 @@ function FaceFrame(){
                             </span>
                         </CopyToClipboard>
                     </td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcTopBackLeft}
-                            style={{width:'250px',color:topBackLeftColor}}
-                            onChange={(e)=>setGcTopBackLeft(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcTopBackRight}
-                            style={{width:'250px',color:topBackRightColor}}
-                            onChange={(e)=>setGcTopBackRight(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
-                            rows={14}
-                            value={gcMiddleBack}
-                            style={{width:'250px',color:middleBackColor}}
-                            onChange={(e)=>setGcMiddleBack(e.target.value)}
-                        />
-                    </td>
-                    <td>
-                        <TextArea
+                    <td></td>
+                    <td></td>
+                    <td >
+                    <TextArea
                             rows={14}
                             value={gcBottomBackLeft}
                             style={{width:'250px',color:bottomBackLeftColor}}
                             onChange={(e)=>setGcBottomBackLeft(e.target.value)}
                         />
                     </td>
-                    <td>
+                    <td >
+                        <TextArea
+                            rows={14}
+                            value={gcBottom}
+                            style={{width:'250px',color:bottomColor}}
+                            onChange={(e)=>setGcBottom(e.target.value)}
+                        />
+                    </td>
+                    <td >
                         <TextArea
                             rows={14}
                             value={gcBottomBackRight}
@@ -347,9 +380,10 @@ function FaceFrame(){
                             onChange={(e)=>setGcBottomBackRight(e.target.value)}
                         />
                     </td>
+                    <td></td>
                 </tr>
             </table>
-        </>
+        </div>
     )
 }
 
