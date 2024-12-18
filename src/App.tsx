@@ -1,10 +1,13 @@
 import './App.css'
 import FaceFrame from './components/FaceFrame'
+import { GCodeContextProvider } from "./context/context";
 
 function App() {
   return (
     <>
-    <FaceFrame />
+      <GCodeContextProvider>
+        <FaceFrame />
+      </GCodeContextProvider>
     </>
   )
 }

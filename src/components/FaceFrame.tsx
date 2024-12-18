@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {Input, Radio, Button} from "antd"
 import axios from "axios"
-import {CopyToClipboard} from 'react-copy-to-clipboard'
 import "./FaceFrame.css"
+import Stile from "./Stile";
+import Rail from "./Rail";
+import { useGCodeContext } from "../context/context";
+import type {params} from "../context/context"
 
-const {TextArea} = Input
 
 const endOpts=[
     {label:"1.5in", value:"1.5in"},
@@ -16,131 +18,155 @@ function FaceFrame(){
     const[height,setHeight]=useState<string>("31")
     const[top,setTop]=useState<string>("1.5in")
     const[bottom,setBottom]=useState<string>("2in")
-    const[s1,setS1]=useState<string>("")
-    const[s2,setS2]=useState<string>("")
-    const[s3,setS3]=useState<string>("")
-    const[s4,setS4]=useState<string>("")
+    const[r1,setR1]=useState<string>("")
+    const[r2,setR2]=useState<string>("")
+    const[r3,setR3]=useState<string>("")
+    const[r4,setR4]=useState<string>("")
     const[width,setWidth]=useState<string>("24")
-    const[gcLeft, setGcLeft]=useState<string>("")
-    const[gcRight, setGcRight]=useState<string>("")
-    const[gcTopZero, setGcTopZero]=useState<string>("")
-    const[gcMiddleZero, setGcMiddleZero]=useState<string>("")
-    const[gcBottomZero, setGcBottomZero]=useState<string>("")
-    const[gcTopLen, setGcTopLen]=useState<string>("")
-    const[gcMiddleLen, setGcMiddleLen]=useState<string>("")
-    const[gcBottomLen, setGcBottomLen]=useState<string>("")
-    const[gcTopBackRight, setGcTopBackRight]=useState<string>("")
-    const[gcTopBackLeft, setGcTopBackLeft]=useState<string>("")
-    const[gcMiddleBack, setGcMiddleBack]=useState<string>("")
-    const[gcBottomBackRight, setGcBottomBackRight]=useState<string>("")
-    const[gcBottomBackLeft, setGcBottomBackLeft]=useState<string>("")
+    const[reset,setReset]=useState<number>(0)
+    const[gcodeWarning, setGCodeWarning]=useState<boolean>(true)
     const[stileLen, setStileLen] = useState<string>("")
     const[railLen, setRailLen] = useState<string>("")
-    const[leftColor,setLeftColor]=useState<string>("black")
-    const[rightColor,setRightColor]=useState<string>("black")
-    const[topZeroColor,setTopZeroColor]=useState<string>("black")
-    const[middleZeroColor,setMiddleZeroColor]=useState<string>("black")
-    const[bottomZeroColor,setBottomZeroColor]=useState<string>("black")
-    const[topLenColor,setTopLenColor]=useState<string>("black")
-    const[middleLenColor,setMiddleLenColor]=useState<string>("black")
-    const[bottomLenColor,setBottomLenColor]=useState<string>("black")
-    const[topBackRightColor,setTopBackRightColor]=useState<string>("black")
-    const[topBackLeftColor,setTopBackLeftColor]=useState<string>("black")
-    const[middleBackColor,setMiddleBackColor]=useState<string>("black")
-    const[bottomBackRightColor,setBottomBackRightColor]=useState<string>("black")
-    const[bottomBackLeftColor,setBottomBackLeftColor]=useState<string>("black")
+    const[frameLabels, setFrameLabels] = useState<any>()
+
+    const{dimensions, updateDimensions, gCode, updateGCode} = useGCodeContext()
+
+    // get gcode from API for current settings
+    function getGcode(){
     
-
-    function getGCODE(){
-
         const params :string[] = []
 
-        setLeftColor('black')
-        setRightColor('black')
-        setTopZeroColor('black')
-        setMiddleZeroColor('black')
-        setBottomZeroColor('black')
-        setTopLenColor('black')
-        setMiddleLenColor('black')
-        setBottomLenColor('black')
-        setTopBackLeftColor('black')
-        setTopBackRightColor('black')
-        setBottomBackLeftColor('black')
-        setBottomBackRightColor('black')
+        setReset((prev)=>prev+1)
 
-        if(top!==""){
-            params.push(`t=${top}`)
-        }
-        if(bottom!==""){
-            params.push(`b=${bottom}`)
-        }
-        if(s1!==""){
-            params.push(`s1=${s1}`)
-        }
-        if(s2!==""){
-            params.push(`s2=${s2}`)
-        }
-        if(s3!==""){
-            params.push(`s3=${s3}`)
-        }
-        if(s4!==""){
-            params.push(`s4=${s4}`)
-        }
-        if(height!==""){
-            params.push(`height=${height}`)
-        }
-        if(width!==""){
-            params.push(`width=${width}`)
-        }
+        if(top!==""){params.push(`t=${top}`)}
+        if(bottom!==""){params.push(`b=${bottom}`)}
+        if(r1!==""){params.push(`s1=${r1}`)}
+        if(r2!==""){params.push(`s2=${r2}`)}
+        if(r3!==""){params.push(`s3=${r3}`)}
+        if(r4!==""){params.push(`s4=${r4}`)}
+        if(height!==""){params.push(`height=${height}`)}
+        if(width!==""){params.push(`width=${width}`)}
 
         const apiParam = `?${params.join("&")}`
 
         axios
             .get(`http://localhost:8080/v1/faceframe${apiParam}`)
             .then((res)=>{
-                setGcLeft(res.data.left)
-                setGcRight(res.data.right)
-                setGcTopZero(res.data.topZero)
-                setGcMiddleZero(res.data.middleZero)
-                setGcBottomZero(res.data.bottomZero)
-                setGcTopLen(res.data.topLen)
-                setGcMiddleLen(res.data.middleLen)
-                setGcBottomLen(res.data.bottomLen)
-                setGcTopBackRight(res.data.topBackRight)
-                setGcTopBackLeft(res.data.topBackLeft)
-                setGcMiddleBack(res.data.middleBack)
-                setGcBottomBackRight(res.data.bottomBackRight)
-                setGcBottomBackLeft(res.data.bottomBackLeft)
                 setRailLen(res.data.railLen)
                 setStileLen(res.data.stileLen)
+                updateGCode(res.data)
+                setGCodeWarning(false)
             })
     }
+
+
+    useEffect(()=>{
+
+        setGCodeWarning(true)
+
+        let  b = 1.5
+        if (bottom === '2in'){
+            b = 2.0
+        }
+
+        let t = 1.5
+        if( top === '2in'){
+            t = 2.0
+        }
+
+        const ht = parseFloat(height)
+        const wd = parseFloat(width)
+
+        const hBot = ht
+        const hBot1 = ht - b
+        const hBotBev = ht - b  +0.5
+        const hTop = 0
+        const hTop1 = t
+        const hTopBev = t - 0.5
+        const wd0 = 0
+        const wdBev = 1
+        const wd1 = 1.5
+        const wdWBev = wd-1
+        const wdW1 = wd - 1.5
+
+        const hR1 = parseFloat(r1)
+        const hR2 = parseFloat(r2)
+        const hR3 = parseFloat(r3)
+        const hR4 = parseFloat(r4)
+
+        const thisDim :params = {top, bottom, ht, wd, hBot, hBot1, hBotBev, hTop, hTop1, hTopBev,
+                                 wd0, wdBev, wd1, wdWBev, wdW1, hR1, hR2, hR3, hR4}
+        updateDimensions(thisDim)
+
+        const thisFrame = 
+            <>
+                {/* top labels */}
+                <text x="-1" y="0" fontFamily="Arial" fontSize="1.5" textAnchor="end">(0,0)</text>
+                <text x="-1" y={`${ht+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="end">{`(0,${ht})`}</text>
+                
+                 {/* bottom labels */}
+                <text x={`${wd+1}`} y="0" fontFamily="Arial" fontSize="1.5" textAnchor="start">{`(${wd},0)`}</text>
+                <text x={`${wd+1}`} y={`${ht+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="start">{`(${wd},${ht})`}</text>
+                
+                {/* rail labels */}
+                {r1!=="" &&
+                    <>
+                        <text x="-1" y={`${hR1+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="end">{`(0,${hR1})`}</text>
+                        <text x={`${wd+1}`} y={`${hR1+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="start">{`(${wd},${hR1})`}</text>
+                    </>
+                }
+                {r2!=="" &&
+                    <>
+                        <text x="-1" y={`${hR2+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="end">{`(0,${hR2})`}</text>
+                        <text x={`${wd+1}`} y={`${hR2+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="start">{`(${wd},${hR2})`}</text>
+                    </>
+                }
+                {r3!=="" &&
+                    <>
+                        <text x="-1" y={`${hR3+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="end">{`(0,${hR3})`}</text>
+                        <text x={`${wd+1}`} y={`${hR3+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="start">{`(${wd},${hR3})`}</text>
+                    </>
+                }
+                {r4!=="" &&
+                    <>
+                        <text x="-1" y={`${hR4+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="end">{`(0,${hR4})`}</text>
+                        <text x={`${wd+1}`} y={`${hR4+0.5}`} fontFamily="Arial" fontSize="1.5" textAnchor="start">{`(${wd},${hR4})`}</text>
+                    </>
+                }
+            </>
+    
+        setFrameLabels(thisFrame)
+
+    },[height,width,top,bottom,
+        r1,r2,r3,r4
+    ])
+
 
     return(
         <div className="ff">
             <h3>Face Frame GCode Generator</h3>
-            <table style={{margin:'auto'}}>
+            <table><tbody>
                 <tr>
                     <td></td>
                     <td></td>
                     <td colSpan={2} style={{paddingTop:'10px', textAlign:'right'}}>
-                        Enter distance(in) from top or left
+                        Enter distance(in) from top
                     </td>
                     <td style={{textAlign:'center',paddingLeft:'100px'}} rowSpan={3}>
-                        <Button style={{backgroundColor:'#1677ff', color:'white'}} onClick={getGCODE}>Generate GCodes</Button>
+                        <Button style={{backgroundColor:'#1677ff', color:'white'}} onClick={getGcode}>Generate GCodes</Button>
                     </td>
                 </tr>
                 <tr>
                     <td>Height(in)</td>
                     <td><Input value={height} onChange={(e)=>setHeight(e.target.value)}/></td>
                     <td style={{textAlign:'right',minWidth:'10vw'}}> Slot1</td>
-                    <td><Input value={s1} onChange={(e)=>setS1(e.target.value)}/></td>
+                    <td><Input value={r1} onChange={(e)=>setR1(e.target.value)}/></td>
                 </tr>
                 <tr>
                     <td>Width(in)</td>
                     <td><Input value={width} onChange={(e)=>setWidth(e.target.value)}/></td>
                     <td style={{textAlign:'right',minWidth:'10vw'}}>Slot2</td>
-                    <td><Input value={s2}  onChange={(e)=>setS2(e.target.value)}/></td>
+                    <td><Input value={r2}  onChange={(e)=>setR2(e.target.value)}/></td>
                 </tr>
                 <tr>
                     <td>Top Width</td>
@@ -152,7 +178,7 @@ function FaceFrame(){
                         onChange={(e)=>setTop(e.target.value)}/>
                     </td>
                     <td style={{textAlign:'right',minWidth:'10vw'}}>Slot3</td>
-                    <td><Input value={s3}  onChange={(e)=>setS3(e.target.value)}/></td>
+                    <td><Input value={r3}  onChange={(e)=>setR3(e.target.value)}/></td>
                     <td style={{textAlign:'center',paddingLeft:'100px'}}>Min Stile: {stileLen}in</td>
                 </tr>
                 <tr>
@@ -165,290 +191,27 @@ function FaceFrame(){
                         onChange={(e)=>setBottom(e.target.value)}/>
                     </td>
                     <td style={{textAlign:'right',minWidth:'10vw'}}>Slot4</td>
-                    <td><Input value={s4} onChange={(e)=>setS4(e.target.value)}/></td>
+                    <td><Input value={r4} onChange={(e)=>setR4(e.target.value)}/></td>
                     <td style={{textAlign:'center',paddingLeft:'100px'}}>Min Rail: {railLen}in</td>
                 </tr>
-            </table>
-            <br/>
-            <br/>
-            <table style={{margin:'auto'}}>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        Top Back Left \__
-                        <CopyToClipboard
-                            text = {gcTopBackLeft}
-                            onCopy ={()=>setTopBackLeftColor("red")}
-                        >
-                            <span style={{color:topBackLeftColor}} className="copyButton">
-                                {topBackLeftColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td >Top Rail Front Zero
-                        <CopyToClipboard
-                            text = {gcTopZero}
-                            onCopy ={()=>setTopZeroColor("red")}
-                        >
-                            <span style={{color:topZeroColor}} className="copyButton">
-                                {topZeroColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td >Top Rail Front Length
-                        <CopyToClipboard
-                            text = {gcTopLen}
-                            onCopy ={()=>setTopLenColor("red")}
-                        >
-                            <span style={{color:topLenColor}} className="copyButton">
-                                {topLenColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td >Top Back Right __/
-                        <CopyToClipboard
-                            text = {gcTopBackRight}
-                            onCopy ={()=>setTopBackRightColor("red")}
-                        >
-                            <span style={{color:topBackRightColor}} className="copyButton">
-                                {topBackRightColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcTopBackLeft}
-                            style={{width:'250px',color:topBackLeftColor}}
-                            onChange={(e)=>setGcTopBackLeft(e.target.value)}
-                        />
-                    </td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcTopZero}
-                            style={{width:'250px',color:topZeroColor}}
-                            onChange={(e)=>setGcTopZero(e.target.value)}
-                        />
-                    </td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcTopLen}
-                            style={{width:'250px',color:topLenColor}}
-                            onChange={(e)=>setGcTopLen(e.target.value)}
-                        />
-                    </td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcTopBackRight}
-                            style={{width:'250px',color:topBackRightColor}}
-                            onChange={(e)=>setGcTopBackRight(e.target.value)}
-                        />
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >Left Stile
-                        <CopyToClipboard
-                            text = {gcLeft}
-                            onCopy ={()=>setLeftColor("red")}
-                        >
-                            <span style={{color:leftColor}} className="copyButton">
-                                {leftColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td></td>
-                    <td colSpan={3}rowSpan={2} >
-                        <table style={{margin:'auto',width:'100%'}}>
-                            <tr>
-                                <td></td>
-                                
-                                <td >Middle Rail(s) Zero
-                                    <CopyToClipboard
-                                        text = {gcMiddleZero}
-                                        onCopy ={()=>setMiddleZeroColor("red")}
-                                    >
-                                        <span style={{color:middleZeroColor}} className="copyButton">
-                                            {middleZeroColor==="red"?"copied":"copy"}
-                                        </span>
-                                    </CopyToClipboard>
-                                </td>
-                                <td >Middle Rail(s) Length
-                                    <CopyToClipboard
-                                        text = {gcMiddleLen}
-                                        onCopy ={()=>setMiddleLenColor("red")}
-                                    >
-                                        <span style={{color:middleLenColor}} className="copyButton">
-                                            {middleLenColor==="red"?"copied":"copy"}
-                                        </span>
-                                    </CopyToClipboard>
-                                </td>
-                                <td >Middle Back \__/
-                                    <CopyToClipboard
-                                        text = {gcMiddleBack}
-                                        onCopy ={()=>setMiddleBackColor("red")}
-                                    >
-                                        <span style={{color:middleBackColor}} className="copyButton">
-                                            {middleBackColor==="red"?"copied":"copy"}
-                                        </span>
-                                    </CopyToClipboard>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td >
-                                    <TextArea
-                                        rows={14}
-                                        value={gcMiddleZero}
-                                        style={{width:'250px',color:middleZeroColor}}
-                                        onChange={(e)=>setGcMiddleZero(e.target.value)}
-                                    />
-                                </td>
-                                <td >
-                                    <TextArea
-                                        rows={14}
-                                        value={gcMiddleLen}
-                                        style={{width:'250px',color:middleLenColor}}
-                                        onChange={(e)=>setGcMiddleLen(e.target.value)}
-                                    />
-                                </td>
-                                <td >
-                                    <TextArea
-                                        rows={14}
-                                        value={gcMiddleBack}
-                                        style={{width:'250px',color:middleBackColor}}
-                                        onChange={(e)=>setGcMiddleBack(e.target.value)}
-                                    />
-                                </td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td></td>
-                    <td >Right Stile
-                        <CopyToClipboard
-                            text = {gcRight}
-                            onCopy ={()=>setRightColor("red")}
-                        >
-                            <span style={{color:rightColor}} className="copyButton">
-                                {rightColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                </tr>
-                <tr>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcLeft}
-                            style={{width:'250px',color:leftColor}}
-                            onChange={(e)=>setGcLeft(e.target.value)}
-                        />
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcRight}
-                            style={{width:'250px',color:rightColor}}
-                            onChange={(e)=>setGcRight(e.target.value)}
-                        />
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td >Bottom Back Left \__
-                        <CopyToClipboard
-                            text = {gcBottomBackLeft}
-                            onCopy ={()=>setBottomBackLeftColor("red")}
-                        >
-                            <span style={{color:bottomBackLeftColor}} className="copyButton">
-                                {bottomBackLeftColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td >Bottom Rail Front Zero
-                        <CopyToClipboard
-                            text = {gcBottomZero}
-                            onCopy ={()=>setBottomZeroColor("red")}
-                        >
-                            <span style={{color:bottomZeroColor}} className="copyButton">
-                                {bottomZeroColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td >Bottom Rail Front Length
-                        <CopyToClipboard
-                            text = {gcBottomLen}
-                            onCopy ={()=>setBottomLenColor("red")}
-                        >
-                            <span style={{color:bottomLenColor}} className="copyButton">
-                                {bottomLenColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td >Bottom Back Right __/
-                        <CopyToClipboard
-                            text = {gcBottomBackRight}
-                            onCopy ={()=>setBottomBackRightColor("red")}
-                        >
-                            <span style={{color:bottomBackRightColor}} className="copyButton">
-                                {bottomBackRightColor==="red"?"copied":"copy"}
-                            </span>
-                        </CopyToClipboard>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td >
-                    <TextArea
-                            rows={14}
-                            value={gcBottomBackLeft}
-                            style={{width:'250px',color:bottomBackLeftColor}}
-                            onChange={(e)=>setGcBottomBackLeft(e.target.value)}
-                        />
-                    </td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcBottomZero}
-                            style={{width:'250px',color:bottomZeroColor}}
-                            onChange={(e)=>setGcBottomZero(e.target.value)}
-                        />
-                    </td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcBottomLen}
-                            style={{width:'250px',color:bottomLenColor}}
-                            onChange={(e)=>setGcBottomLen(e.target.value)}
-                        />
-                    </td>
-                    <td >
-                        <TextArea
-                            rows={14}
-                            value={gcBottomBackRight}
-                            style={{width:'250px',color:bottomBackRightColor}}
-                            onChange={(e)=>setGcBottomBackRight(e.target.value)}
-                        />
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
+            </tbody></table>
+            {gcodeWarning?
+                <h3 style={{color:'darkred'}}>New model inputs have not been converted to gcode. "Generate GCodes" required.</h3>
+                :<h3 style={{color:'white'}}>.</h3>
+            }
+        {gCode !== null &&
+                <svg width="600" height="500" viewBox={`-8,-2,${(Number(dimensions.wd)+10)*1.1},${(Number(dimensions.hBot)+5)}`}>
+                    <Stile side='left' reset={reset}/>
+                    <Stile side='right' reset={reset}/>
+                    <Rail  position='top' reset={reset}/>
+                    <Rail  position='bottom' reset={reset}/>
+                    {r1 && <Rail position={parseFloat(r1)} reset={reset}/>}
+                    {r2 && <Rail position={parseFloat(r2)} reset={reset}/>}  
+                    {r3 && <Rail position={parseFloat(r3)} reset={reset}/>}  
+                    {r4 && <Rail position={parseFloat(r4)} reset={reset}/>}         
+                    {frameLabels}
+                </svg>
+            }
         </div>
     )
 }
