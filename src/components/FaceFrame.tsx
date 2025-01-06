@@ -144,7 +144,7 @@ function FaceFrame(){
 
     return(
         <div className="ff">
-            <h3>Face Frame GCode Generator</h3>
+            <h2>Face Frame GCode Generator</h2>
             <table><tbody>
                 <tr>
                     <td></td>
