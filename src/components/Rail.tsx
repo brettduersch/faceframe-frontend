@@ -21,6 +21,10 @@ type RailKeys = {
     frontLen :string
     backLeft :string
     backRight :string
+    cleanLeft :string,
+    cleanRight :string,
+    flatZero :string,
+    flatLen :string,
 }
 
 // SVG Polygon and Modal for stiles
@@ -33,6 +37,10 @@ export default function Rail({position, reset}:RailProps){
     const [fillFLen, setFillFLen] = useState<string>("lightgray")
     const [fillBLeft, setFillBLeft] = useState<string>("lightgray")
     const [fillBRight, setFillBRight] = useState<string>("lightgray")
+    const [fillCRight, setFillCRight] = useState<string>("lightgray")
+    const [fillCLeft, setFillCLeft] = useState<string>("lightgray")
+    const [fillFlatZero, setFillFlatZero] = useState<string>("lightgray")
+    const [fillFlatLen, setFillFlatLen] = useState<string>("lightgray")
 
     const{dimensions, gCode} = useGCodeContext()
 
@@ -182,15 +190,52 @@ export default function Rail({position, reset}:RailProps){
     const keys :RailKeys = useMemo(()=>{
 
         if(position === 'top'){
-            return{front0: 'topZero', frontLen: 'topLen', backLeft: 'topBackLeft', backRight: 'topBackRight'}
+
+            let rightKey = 'clean1Right'
+            if( p.top === '2in'){
+                rightKey = 'clean2Right'
+            }
+
+            return{front0: 'topZero',
+                   frontLen: 'topLen',
+                   cleanLeft: 'cleanLeft',
+                   cleanRight: rightKey,
+                   flatZero: 'flatRailZero',
+                   flatLen: 'flatRailLen',
+                   backLeft: 'topBackLeft',
+                   backRight: 'topBackRight'}
+
         } else if (position === 'bottom'){
-            return{front0: 'bottomZero', frontLen: 'bottomLen', backLeft: 'bottomBackLeft', backRight: 'bottomBackRight'}
+
+            let rightKey = 'clean1Right'
+            if( p.bottom === '2in'){
+                rightKey = 'clean2Right'
+            }
+
+            return{front0: 'bottomZero',
+                   frontLen: 'bottomLen',
+                   cleanLeft: 'cleanLeft',
+                   cleanRight: rightKey,
+                   flatZero: 'flatRailZero',
+                   flatLen: 'flatRailLen',
+                   backLeft: 'bottomBackLeft',
+                    backRight: 'bottomBackRight'}
         } else{
-            return{front0: 'middleZero', frontLen: 'middleLen', backLeft: 'middleBack', backRight: 'middleBack'}
+
+            return{front0: 'middleZero',
+                   frontLen: 'middleLen',
+                   cleanLeft: 'cleanLeft',
+                   cleanRight: 'clean1Right',
+                   flatZero: 'flatRailZero',
+                   flatLen: 'flatRailLen',
+                   backLeft: 'middleBack',
+                   backRight: 'middleBack'}
         }
 
-
-        return{front0: '', frontLen: '', backLeft: '', backRight: ''}
+        return{front0: '', frontLen: '',
+               cleanLeft: '', cleanRight: '',
+               flatZero: '', flatLen: '',
+               backLeft: '', backRight: ''}
     },[position])
 
 
@@ -203,6 +248,11 @@ export default function Rail({position, reset}:RailProps){
                 frontLen: 'Top Front Len',
                 backLeft: 'Top Back Left \\__',
                 backRight: 'Top Back Right __/',
+                cleanLeft: 'Clean Left Side',
+                cleanRight: 'Clean to Width (right)',
+                flatZero: 'Flatten Zero End',
+                flatLen: 'Flatten Len End',
+                
             }
          } else if (position === 'bottom'){
             return{
@@ -210,6 +260,10 @@ export default function Rail({position, reset}:RailProps){
                 frontLen: 'Bottom Front Len',
                 backLeft: 'Bottom Back Left \\__',
                 backRight: 'Bottom Back Right __/',
+                cleanLeft: 'Clean Left Side',
+                cleanRight: 'Clean to Width (right)',
+                flatZero: 'Flatten Zero End',
+                flatLen: 'Flatten Len End',
             }
          } else {
             return{
@@ -217,10 +271,17 @@ export default function Rail({position, reset}:RailProps){
                 frontLen: `${position}in Front Len`,
                 backLeft: `${position}in Back Left \\__/`,
                 backRight: `${position}in Back Right \\__/`,
+                cleanLeft: 'Clean Left Side',
+                cleanRight: 'Clean to Width (right)',
+                flatZero: 'Flatten Zero End',
+                flatLen: 'Flatten Len End',
             }
          }
  
-         return{front0: '', frontLen: '', backLeft: '', backRight: ''}
+         return{front0: '', frontLen: '',
+                backLeft: '', backRight: '',
+                cleanLeft: '', cleanRight: '',
+                flatZero: '', flatLen: '',}
      },[position])
 
 
@@ -250,6 +311,40 @@ export default function Rail({position, reset}:RailProps){
                 {g != undefined &&
                     <div style={{padding:'20px',overflowY:'auto'}}>
                         <table style={{margin:'auto'}}>
+                            <tr>
+                            <td>
+                                    <GCode
+                                        title = {labels.cleanLeft}
+                                        gCode ={g[keys.cleanLeft]}
+                                        color = {fillCLeft}
+                                        setColor = {setFillCLeft}
+                                    />
+                                </td>
+                                <td>
+                                    <GCode
+                                        title = {labels.cleanRight}
+                                        gCode ={g[keys.cleanRight]}
+                                        color = {fillCRight}
+                                        setColor = {setFillCRight}
+                                    />
+                                </td>
+                                <td>
+                                    <GCode
+                                        title = {labels.flatZero}
+                                        gCode ={g[keys.flatZero]}
+                                        color = {fillFlatZero}
+                                        setColor = {setFillFlatZero}
+                                    />
+                                </td>
+                                <td>
+                                    <GCode
+                                        title = {labels.flatLen}
+                                        gCode ={g[keys.flatLen]}
+                                        color = {fillFlatLen}
+                                        setColor = {setFillFlatLen}
+                                    />
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <GCode
