@@ -291,6 +291,10 @@ export default function Rail({position, reset}:RailProps){
         setFillFLen("lightgray")
         setFillBLeft("lightgray")
         setFillBRight("lightgray")
+        setFillCLeft("lightgray")
+        setFillCRight("lightgray")
+        setFillFlatLen("lightgray")
+        setFillFlatZero("lightgray")
      },[reset])
 
 
