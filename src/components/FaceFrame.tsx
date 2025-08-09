@@ -201,8 +201,8 @@ function FaceFrame(){
             }
         {gCode !== null &&
                 <svg width="600" height="500" viewBox={`-8,-2,${(Number(dimensions.wd)+10)*1.1},${(Number(dimensions.hBot)+5)}`}>
-                    <Stile side='left' reset={reset}/>
-                    <Stile side='right' reset={reset}/>
+                    <Stile side='left' gSide = 'right' reset={reset}/>
+                    <Stile side='right' gSide = 'left' reset={reset}/>
                     <Rail  position='top' reset={reset}/>
                     <Rail  position='bottom' reset={reset}/>
                     {r1 && <Rail position={parseFloat(r1)} reset={reset}/>}

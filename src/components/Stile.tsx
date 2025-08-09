@@ -5,13 +5,14 @@ import GCode from "./GCode"
 
 type StileProps = {
     side: 'left' | 'right'
+    gSide: 'left' | 'right'
     reset :number
 }
 
 // SVG Polygon and Modal for stiles
 // return SVG polygon and associated modal with gcode to copy
 // svg image will change color after copying 
-export default function Stile({side, reset}:StileProps){
+export default function Stile({side, gSide, reset}:StileProps){
     
 
     const [show, setShow] = useState<boolean>(false)
@@ -78,7 +79,7 @@ export default function Stile({side, reset}:StileProps){
                             <td>
                                 <GCode
                                     title = {`${side} stile`}
-                                    gCode ={g[side]}
+                                    gCode ={g[gSide]}
                                     color = {fillColor}
                                     setColor = {setFillColor}
                                 />

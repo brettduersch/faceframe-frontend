@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react"
-import { Modal } from "antd"
+import { Modal, Input, Button, Space} from "antd"
 import GCode from "./GCode"
 import { useGCodeContext } from "../context/context"
+import axios from 'axios'
 
 type RailProps = {
     position: 'top' | 'bottom' |number
@@ -41,6 +42,9 @@ export default function Rail({position, reset}:RailProps){
     const [fillCLeft, setFillCLeft] = useState<string>("lightgray")
     const [fillFlatZero, setFillFlatZero] = useState<string>("lightgray")
     const [fillFlatLen, setFillFlatLen] = useState<string>("lightgray")
+    const [currentWid, setCurrentWid] = useState<string>("")
+    const [targetWid, setTargetWid] = useState<string>("1.5")
+    const [rightCleanGCode, setRightCleanGCode]=useState<string>("")
 
     const{dimensions, gCode} = useGCodeContext()
 
@@ -243,6 +247,9 @@ export default function Rail({position, reset}:RailProps){
     const labels :RailKeys = useMemo(()=>{
         // set polygon positions for top rail
          if(position === 'top'){
+
+            setTargetWid(p.top.replace('in',''))
+
             return{
                 front0:  'Top Front Zero',
                 frontLen: 'Top Front Len',
@@ -255,6 +262,9 @@ export default function Rail({position, reset}:RailProps){
                 
             }
          } else if (position === 'bottom'){
+
+            setTargetWid(p.bottom.replace('in',''))
+
             return{
                 front0:  'Bottom Front Zero',
                 frontLen: 'Bottom Front Len',
@@ -297,6 +307,20 @@ export default function Rail({position, reset}:RailProps){
         setFillFlatZero("lightgray")
      },[reset])
 
+    function getRightGCode(){
+
+        console.log(currentWid)
+
+        const apiParams = `?current=${currentWid}` +
+                           `&width=${p.wd}`+
+                           `&board=${targetWid}`
+
+        axios
+            .get(`http://localhost:8080/v1/cleanRight${apiParams}`)
+            .then((res)=>{
+                setRightCleanGCode(res.data)
+            })
+    } 
 
     return(
         <>
@@ -316,7 +340,7 @@ export default function Rail({position, reset}:RailProps){
                     <div style={{padding:'20px',overflowY:'auto'}}>
                         <table style={{margin:'auto'}}>
                             <tr>
-                            <td>
+                            <td style={{verticalAlign:'bottom'}}>
                                     <GCode
                                         title = {labels.cleanLeft}
                                         gCode ={g[keys.cleanLeft]}
@@ -324,15 +348,30 @@ export default function Rail({position, reset}:RailProps){
                                         setColor = {setFillCLeft}
                                     />
                                 </td>
-                                <td>
+                                <td style={{verticalAlign:'bottom'}}>
+                                    <Space.Compact>
+                                    <Input 
+                                        addonBefore="now"
+                                        value={currentWid} 
+                                        style={{width:'110px'}}
+                                        onChange={(e)=>setCurrentWid(e.target.value)}
+                                    />
+                                    <Input 
+                                        addonBefore="tar"
+                                        value={targetWid} 
+                                        style={{width:'90px'}}
+                                        onChange={(e)=>setTargetWid(e.target.value)}
+                                    />
+                                    <Button onClick={getRightGCode}>GO</Button>
+                                    </Space.Compact>
                                     <GCode
                                         title = {labels.cleanRight}
-                                        gCode ={g[keys.cleanRight]}
+                                        gCode ={rightCleanGCode}
                                         color = {fillCRight}
                                         setColor = {setFillCRight}
                                     />
                                 </td>
-                                <td>
+                                <td style={{verticalAlign:'bottom'}}>
                                     <GCode
                                         title = {labels.flatZero}
                                         gCode ={g[keys.flatZero]}
@@ -340,7 +379,7 @@ export default function Rail({position, reset}:RailProps){
                                         setColor = {setFillFlatZero}
                                     />
                                 </td>
-                                <td>
+                                <td style={{verticalAlign:'bottom'}}>
                                     <GCode
                                         title = {labels.flatLen}
                                         gCode ={g[keys.flatLen]}
@@ -350,16 +389,8 @@ export default function Rail({position, reset}:RailProps){
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <GCode
-                                        title = {labels.backLeft}
-                                        gCode ={g[keys.backLeft]}
-                                        color = {fillBLeft}
-                                        setColor = {setFillBLeft}
-                                    />
-                                </td>
-                                <td>
-                                    <GCode
+                            <td>
+                                <GCode
                                         title = {labels.front0}
                                         gCode ={g[keys.front0]}
                                         color = {fillF0}
@@ -372,6 +403,14 @@ export default function Rail({position, reset}:RailProps){
                                         gCode ={g[keys.frontLen]}
                                         color = {fillFLen}
                                         setColor = {setFillFLen}
+                                    />
+                                </td>
+                                <td>
+                                    <GCode
+                                        title = {labels.backLeft}
+                                        gCode ={g[keys.backLeft]}
+                                        color = {fillBLeft}
+                                        setColor = {setFillBLeft}
                                     />
                                 </td>
                                 <td>
