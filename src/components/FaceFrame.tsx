@@ -9,6 +9,7 @@ import type {params} from "../context/context"
 
 
 const endOpts=[
+    {label:"0in", value:"0in"},
     {label:"1.5in", value:"1.5in"},
     {label:"2in", value:"2in"}
 ]
@@ -169,7 +170,7 @@ function FaceFrame(){
                     <td><Input value={r2}  onChange={(e)=>setR2(e.target.value)}/></td>
                 </tr>
                 <tr>
-                    <td>Top Width</td>
+                    <td>Top Rail Thickness</td>
                     <td><Radio.Group 
                         options={endOpts}
                         optionType="button"
@@ -182,7 +183,7 @@ function FaceFrame(){
                     <td style={{textAlign:'center',paddingLeft:'100px'}}>Min Stile: {stileLen}in</td>
                 </tr>
                 <tr>
-                    <td>Bottom Width</td>
+                    <td>Bottom Rail Thickness</td>
                     <td><Radio.Group 
                         options={endOpts}
                         optionType="button"
@@ -203,8 +204,8 @@ function FaceFrame(){
                 <svg width="600" height="500" viewBox={`-8,-2,${(Number(dimensions.wd)+10)*1.1},${(Number(dimensions.hBot)+5)}`}>
                     <Stile side='left' gSide = 'right' reset={reset}/>
                     <Stile side='right' gSide = 'left' reset={reset}/>
-                    <Rail  position='top' reset={reset}/>
-                    <Rail  position='bottom' reset={reset}/>
+                    {top !="0in" && <Rail  position='top' reset={reset}/>}
+                    {bottom != "0in" && <Rail  position='bottom' reset={reset}/>}
                     {r1 && <Rail position={parseFloat(r1)} reset={reset}/>}
                     {r2 && <Rail position={parseFloat(r2)} reset={reset}/>}  
                     {r3 && <Rail position={parseFloat(r3)} reset={reset}/>}  

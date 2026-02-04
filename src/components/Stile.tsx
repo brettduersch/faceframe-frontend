@@ -31,22 +31,14 @@ export default function Stile({side, gSide, reset}:StileProps){
 
         if(side === 'left'){
             thesePoints = `0,0
-            ${p.wdBev},0 
-            ${p.wdBev},${p.hTopBev}
-            ${p.wd1},${p.hTop1}
-            ${p.wd1},${p.hBot1}
-            ${p.wdBev},${p.hBotBev}
-            ${p.wdBev},${p.ht}
+            ${p.wd1},0 
+            ${p.wd1},${p.ht}
             0,${p.ht}
             0,0`
         }else{
             thesePoints =`${p.wd},0 
-            ${p.wdWBev},0 
-            ${p.wdWBev},${p.hTopBev} 
-            ${p.wdW1},${p.hTop1} 
-            ${p.wdW1},${p.hBot1} 
-            ${p.wdWBev},${p.hBotBev} 
-            ${p.wdWBev},${p.ht} 
+            ${p.wdW1},0 
+            ${p.wdW1},${p.ht} 
             ${p.wd},${p.ht} 
             ${p.wd},0`
         }
